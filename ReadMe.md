@@ -1,9 +1,3 @@
-A high-quality **README.md** is the "front door" of your project. It explains to recruiters, collaborators, or your future self exactly what this tool does and how to get it running.
-
-Here is a professional draft tailored to your Tsunami Prediction project.
-
----
-
 # 🌊 Tsunami Prediction System
 **Machine Learning Pipeline & Flask Web Application**
 
@@ -77,7 +71,3 @@ To push this project to a live URL using the Azure CLI:
 * **Recall (Tsunami Catch Rate):** 89%
 * **Best Parameters:** `max_depth: 10`, `criterion: 'gini'`
 
----
-
-### Next Step
-Would you like me to help you write a **"Project Description"** paragraph for your portfolio or LinkedIn to go along with this code?
