@@ -1,73 +1,85 @@
-# 🌊 Tsunami Prediction System
-**Machine Learning Pipeline & Flask Web Application**
+# Tsunami Prediction System
 
-This project uses a **Decision Tree Classifier** optimized via **Grid Search** to predict the likelihood of a tsunami based on seismic activity data (magnitude, depth, intensity, etc.). The system is wrapped in a **Flask web interface** and is ready for deployment to **Azure App Service**.
+A decision tree classifier that estimates tsunami likelihood from seismic event
+parameters, wrapped in a Flask interface and deployed to Azure App Service. Built as an
+end-to-end demonstration: data pipeline, tuned model, serving layer, cloud deployment.
 
-## 🚀 Features
-* **Automated Preprocessing:** Uses Scikit-Learn `Pipelines` to handle missing values and feature scaling (StandardScaler/OneHotEncoder).
-* **Hyperparameter Tuning:** Optimized using `GridSearchCV` for maximum accuracy.
-* **Interactive Web Interface:** A user-friendly HTML form to input earthquake parameters.
-* **Cloud Ready:** Configured for seamless deployment to Azure.
+**Status:** Deployed demonstration system · **License:** MIT
 
-## 🛠️ Tech Stack
-* **Language:** Python 3.9+
-* **ML Libraries:** Scikit-Learn, Pandas, Joblib
-* **Web Framework:** Flask
-* **Visualization:** Seaborn, Matplotlib
-* **Deployment:** Azure App Service, Gunicorn
+---
 
-## 📂 Project Structure
-```text
-├── app.py                      # Flask Application Logic
-├── earthquake_data_tsunami.csv  # Raw Dataset
-├── train_model.py              # ML Training & Grid Search Script
-├── tsunami_model_pipeline.pkl   # Serialized Winning Model
-├── requirements.txt            # Python Dependencies
-├── Procfile                    # Azure/Heroku Deployment Config
-└── templates/
-    └── index.html              # Web Interface (HTML/CSS)
+## What this is, and what it isn't
+
+This demonstrates **end-to-end ML delivery** — the path from raw CSV to a running
+endpoint. That path is the point, not the state of the art in tsunami science.
+
+It is **not** an operational warning system and must not be used as one. Real tsunami
+warning is performed by the NOAA Tsunami Warning Centers and equivalent national agencies,
+using sensor networks, deep-ocean pressure gauges, and physical propagation models this
+project does not attempt.
+
+**If you are looking for tsunami warnings, go to [tsunami.gov](https://www.tsunami.gov).**
+
+---
+
+## Approach
+
+| Stage | Implementation |
+|---|---|
+| Data | `earthquake_data_tsunami.csv` — seismic parameters including magnitude, depth, intensity |
+| Preprocessing | Scikit-Learn `Pipeline` — imputation, `StandardScaler` for numeric features, `OneHotEncoder` for categorical |
+| Model | `DecisionTreeClassifier`, tuned via `GridSearchCV` |
+| Selected parameters | `criterion='gini'`, `max_depth=10` |
+| Serving | Flask application, model loaded with `joblib` |
+| Deployment | Azure App Service, Gunicorn |
+
+**Why a decision tree.** Chosen for interpretability — the fitted tree is directly
+inspectable and the decision path for any prediction can be read off it. That is a
+deliberate trade: a gradient-boosted ensemble would likely score higher and explain worse.
+
+---
+
+## Results
+
+**Recall on the tsunami class: 89%.**
+
+This is the figure the model should be judged on. In a detection problem where a missed
+event costs far more than a false alarm, recall is the metric that matters.
+
+Overall accuracy is 89.8%, reported for completeness rather than as a headline. **On an
+imbalanced detection task, accuracy sits close to the majority-class baseline and says
+very little** — a classifier that predicted "no tsunami" for every input would score
+respectably.
+
+---
+
+## Limitations
+
+- Trained on a single historical catalog. Performance on out-of-distribution events is
+  unmeasured.
+- Seismic parameters alone are an incomplete basis for tsunami generation, which depends on
+  fault geometry, displacement, and bathymetry not represented in the feature set.
+- No temporal holdout, so evaluation may be optimistic relative to genuine forecasting.
+- Single tuned model. No ensemble comparison and no calibration analysis.
+
+---
+
+## Running it
+
+```bash
+git clone https://github.com/JTunnessen/tsunami-prediction-system.git
+cd tsunami-prediction-system
+pip install -r requirements.txt
+python app.py
 ```
 
-## ⚙️ Installation & Local Setup
+Python 3.9+. Scikit-Learn, pandas, joblib, Flask, seaborn, matplotlib.
 
-1. **Clone the repository:**
-   ```bash
-   git clone <your-repo-url>
-   cd tsunami-prediction
-   ```
+---
 
-2. **Install dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
+## License
 
-3. **Train the model (Optional):**
-   If you want to re-run the Grid Search tournament:
-   ```bash
-   python train_model.py
-   ```
+MIT. See [`LICENSE`](LICENSE).
 
-4. **Run the Web App:**
-   ```bash
-   python app.py
-   ```
-   Visit `http://127.0.0.1:5000` in your browser.
 
-## ☁️ Deployment to Azure
-To push this project to a live URL using the Azure CLI:
-
-1. **Login to Azure:**
-   ```bash
-   az login
-   ```
-
-2. **Deploy via App Service:**
-   ```bash
-   az webapp up --runtime PYTHON:3.9 --sku F1 --name your-unique-app-name
-   ```
-
-## 📊 Model Performance
-* **Accuracy:** ~89.83%
-* **Recall (Tsunami Catch Rate):** 89%
-* **Best Parameters:** `max_depth: 10`, `criterion: 'gini'`
 
